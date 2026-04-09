@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель - ТИТЛП{% endblock %}
+{% block content %}
+<div class="container">
+    <h1><i class="fas fa-cog"></i> Панель администратора</h1>
+    <div class="grid">
+        <div class="card text-center"><i class="fas fa-users fa-3x" style="color:var(--primary-color);"></i><h2>{{ stats.users }}</h2><p>Пользователей</p><a href="{{ url_for('admin_users') }}" class="btn btn-primary">Управление</a></div>
+        <div class="card text-center"><i class="fas fa-file-alt fa-3x" style="color:#27ae60;"></i><h2>{{ stats.files }}</h2><p>Файлов</p><a href="{{ url_for('files') }}" class="btn btn-success">Перейти</a></div>
+        <div class="card text-center"><i class="fas fa-bullhorn fa-3x" style="color:#f39c12;"></i><h2>{{ stats.announcements }}</h2><p>Объявлений</p><a href="{{ url_for('announcements') }}" class="btn btn-warning">Перейти</a></div>
+        <div class="card text-center"><i class="fas fa-newspaper fa-3x" style="color:#e74c3c;"></i><h2>{{ stats.news }}</h2><p>Новостей</p><a href="{{ url_for('news') }}" class="btn btn-danger">Перейти</a></div>
+    </div>
+    <div class="card"><h3>Быстрые ссылки</h3><div style="display:flex; gap:1rem; flex-wrap:wrap;"><a href="{{ url_for('schedule') }}" class="btn btn-primary">Расписание</a><a href="{{ url_for('add_news') }}" class="btn btn-success">+ Новость</a><a href="{{ url_for('files') }}" class="btn btn-info">Файлы</a><a href="{{ url_for('gallery') }}" class="btn btn-warning">Галерея</a></div></div>
+</div>{% endblock %}
