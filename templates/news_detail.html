@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ news.title }} - ТИТЛП{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        {% if news.image_filename %}<img src="{{ url_for('static', filename='uploads/' + news.image_filename) }}" style="width:100%; max-height:400px; object-fit:cover; border-radius:10px; margin-bottom:2rem;">{% endif %}
+        <h1>{{ news.title }}</h1>
+        <small class="text-muted">{{ news.created_at.strftime('%d.%m.%Y') }}</small>
+        <hr><p style="font-size:1.1rem; line-height:1.8;">{{ news.content }}</p><br>
+        <a href="{{ url_for('news') }}" class="btn btn-primary"><i class="fas fa-arrow-left"></i> К списку</a>
+    </div>
+</div>{% endblock %}

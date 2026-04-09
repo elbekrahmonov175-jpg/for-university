@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Расписание - ТИТЛП{% endblock %}
+{% block content %}
+<div class="container">
+    <h1><i class="fas fa-calendar-alt"></i> Расписание занятий</h1>
+    <div class="card">
+        <form method="get" class="form-inline">
+            <div class="form-group">
+                <label>Группа:</label>
+                <select name="group" class="form-control" onchange="this.form.submit()">
+                    {% for group in groups %}
+                    <option value="{{ group }}" {% if group == selected_group %}selected{% endif %}>{{ group }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if current_user.role == 'admin' %}
+            <button type="button" class="btn btn-success" onclick="document.getElementById('addModal').style.display='block'">
+                <i class="fas fa-plus"></i> Добавить
+            </button>
+            {% endif %}
+        </form>
+    </div>
+    {% if schedule_data %}
+        {% for day, lessons in schedule_data.items() %}
+        <div class="card">
+            <h3>{{ day }}</h3>
+            <table class="table">
+                <thead><tr><th>Время</th><th>Предмет</th><th>Преподаватель</th><th>Ауд.</th>{% if current_user.role == 'admin' %}<th>Действия</th>{% endif %}</tr></thead>
+                <tbody>
+                    {% for lesson in lessons %}
+                    <tr>
+                        <td>{{ lesson.start_time }} - {{ lesson.end_time }}</td>
+                        <td><strong>{{ lesson.subject }}</strong></td>
+                        <td>{{ lesson.teacher or '-' }}</td>
+                        <td>{{ lesson.room or '-' }}</td>
+                        {% if current_user.role == 'admin' %}
+                        <td><a href="{{ url_for('delete_schedule', id=lesson.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Удалить?')"><i class="fas fa-trash"></i></a></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card text-center"><p>Расписание пока не добавлено</p></div>
+    {% endif %}
+</div>
+{% if current_user.role == 'admin' %}
+<div id="addModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000;">
+    <div style="background:white; max-width:500px; margin:50px auto; padding:2rem; border-radius:10px;">
+        <h3>Добавить занятие</h3>
+        <form method="post" action="{{ url_for('add_schedule') }}">
+            <input type="hidden" name="group_name" value="{{ selected_group }}">
+            <div class="form-group"><label>День</label><select name="day_of_week" class="form-control" required><option>Понедельник</option><option>Вторник</option><option>Среда</option><option>Четверг</option><option>Пятница</option><option>Суббота</option></select></div>
+            <div class="form-group"><label>Предмет</label><input type="text" name="subject" class="form-control" required></div>
+            <div class="form-group"><label>Преподаватель</label><input type="text" name="teacher" class="form-control"></div>
+            <div class="form-group"><label>Аудитория</label><input type="text" name="room" class="form-control"></div>
+            <div class="form-group"><label>Начало</label><input type="time" name="start_time" class="form-control" required></div>
+            <div class="form-group"><label>Окончание</label><input type="time" name="end_time" class="form-control" required></div>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <button type="button" class="btn" onclick="document.getElementById('addModal').style.display='none'">Отмена</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+<style>.form-inline { display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; } .btn-sm { padding:5px 10px; font-size:0.8rem; }</style>
+{% endblock %}
